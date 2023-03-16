@@ -1,3 +1,71 @@
+Business Context
+This case requires trainees to develop a model for predicting fraudulent transactions for afinancial
+company and use insights from the model to develop an actionable plan. Data for thecase is available
+in CSV format having 6362620 rows and 10 columns. Candidates can use whatever method they
+wish to develop their machine learning model. Following usual model development procedures, the
+model would be estimated on the calibration data and tested on the validation data. This case
+requires both statistical analysis and creativity/judgment. We recommend you spend time on both
+fine-tuning and interpreting the results of your machine learning model.
+Data Dictionary & Source Acquisition
+ffData Dictionary: The data dictionary of the dataset can be found here.
+ffData Source: The dataset can be found here.
+Your task is to execute the process for proactive detection of fraud while answering following
+questions.
+1. Data cleaning including missing values, outliers and multi-collinearity.
+2. Describe your fraud detection model in elaboration.
+3. How did you select variables to be included in the model?
+4. Demonstrate the performance of the model by using best set of tools.
+5. What are the key factors that predict fraudulent customer?
+6. Do these factors make sense? If yes, How? If not, How not?
+7. What kind of prevention should be adopted while company update its infrastructure?
+8. Assuming these actions have been implemented, how would you determine if they work?
+To begin, I would start by analyzing the data to understand the distribution of the target variable
+(fraud or non-fraud) and the relationship between the variables. I would also check for any missing
+values, outliers, or other issues that need to be addressed in the data cleaning phase.
+Once the data is cleaned, I would then split the data into a training and validation set to build and
+evaluate the model. I would use various machine learning algorithms like Random Forest, Logistic
+Regression, and Neural Network to train the model. I would use techniques like cross-validation
+and grid search to fine-tune the model and select the best performing model.
+After selecting the best model, I would evaluate its performance using metrics such as accuracy,
+precision, recall, F1-score, and AUC-ROC. I would also use techniques like feature importance and
+partial dependence plots to understand which features are most important in predicting fraud.
+
+With the insights gained from the model, I would develop an actionable plan for the financial company to proactively detect and prevent fraud. This plan could include implementing monitoring and
+detection systems, training employees to recognize and report suspicious activity, and developing
+strategies for identifying and mitigating high-risk transactions.
+Finally, to determine if the actions taken to prevent fraud are working, I would track the number
+of fraudulent transactions over time, as well as the financial losses caused by fraud. I would also
+monitor the performance of the fraud detection model over time to ensure it continues to be effective.
+HERE I AM USING KAGGLE ONLINE NOTEBOOK AS THE JUPITER NOTEBOOK USING ANACONDA WAS NOT COMPATIABLE
+Data cleaning: Before building a model, it is important to clean the data. This includes handling missing values, identifying and handling outliers, and checking for multi-collinearity among
+variables. Missing values can be handled by either dropping rows with missing values or imputing
+them with a method such as mean or median imputation. Outliers can be identified by visualizing
+the data or using statistical methods such as the Z-score. Multi-collinearity can be checked by
+calculating the correlation matrix and identifying variables with high correlation.
+Fraud detection model: The specific model used for fraud detection can vary depending on the
+data and the problem at hand. Some common models used for fraud detection include logistic
+regression, decision trees, and neural networks. I would use Random Forest Classifier, which is an
+ensemble method that combines multiple decision trees to make a prediction. Random Forest is
+a powerful algorithm, which can handle high-dimensional data with a large number of variables
+and can also handle categorical variables. It can also be used for feature selection, which is an
+important step in identifying the most relevant variables for predicting fraud.
+Variable selection: Variables can be selected using different methods such as correlation analysis,
+mutual information, or recursive feature elimination. I would use feature importance provided by
+Random Forest Classifier to select top variables.
+Model performance: Model performance can be evaluated using metrics such as accuracy, precision, recall, F1-score, and AUC-ROC. I would use confusion matrix, classification report, ROC-AUC
+curve and precision-recall curve to evaluate model performance.
+Key factors predicting fraudulent customer: The key factors that predict fraudulent customers can be identified by interpreting the model’s coefficients or feature importances. These
+factors may include demographic information, transaction history, and other relevant variables.
+Factors making sense: The factors that predict fraudulent customers should make sense in the
+context of the problem and the data. For example, if the model is identifying customers with a
+history of suspicious transactions as more likely to be fraudulent, that makes sense in the context
+of fraud detection.
+Prevention: To prevent fraud, the company can implement measures such as monitoring transactions for unusual patterns, implementing fraud detection software, and training employees to
+recognize and report suspicious activity.
+Evaluating actions: To determine if the actions taken to prevent fraud are working, the company
+can track the number of fraudulent transactions over time, as well as the financial losses caused by
+fraud. Additionally, the company can use metrics such as precision, recall, and F1-score to evaluate
+the performance of the fraud detection model over time.
 1. Data cleaning including missing values, outliers and multi-collinearity.
 Data cleaning is an important step in preparing the data for modeling. It ensures that
 the data is accurate, consistent, and ready for analysis. The following are some steps
