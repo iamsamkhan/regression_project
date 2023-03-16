@@ -1,0 +1,382 @@
+#Business Context
+This case requires trainees to develop a model for predicting fraudulent transactions for afinancial
+company and use insights from the model to develop an actionable plan. Data for thecase is available
+in CSV format having 6362620 rows and 10 columns. Candidates can use whatever method they
+wish to develop their machine learning model. Following usual model development procedures, the
+model would be estimated on the calibration data and tested on the validation data. This case
+requires both statistical analysis and creativity/judgment. We recommend you spend time on both
+fine-tuning and interpreting the results of your machine learning model.
+Data Dictionary & Source Acquisition
+ffData Dictionary: The data dictionary of the dataset can be found here.
+ffData Source: The dataset can be found here.
+Your task is to execute the process for proactive detection of fraud while answering following
+questions.
+1. Data cleaning including missing values, outliers and multi-collinearity.
+2. Describe your fraud detection model in elaboration.
+3. How did you select variables to be included in the model?
+4. Demonstrate the performance of the model by using best set of tools.
+5. What are the key factors that predict fraudulent customer?
+6. Do these factors make sense? If yes, How? If not, How not?
+7. What kind of prevention should be adopted while company update its infrastructure?
+8. Assuming these actions have been implemented, how would you determine if they work?
+To begin, I would start by analyzing the data to understand the distribution of the target variable
+(fraud or non-fraud) and the relationship between the variables. I would also check for any missing
+values, outliers, or other issues that need to be addressed in the data cleaning phase.
+Once the data is cleaned, I would then split the data into a training and validation set to build and
+evaluate the model. I would use various machine learning algorithms like Random Forest, Logistic
+Regression, and Neural Network to train the model. I would use techniques like cross-validation
+and grid search to fine-tune the model and select the best performing model.
+After selecting the best model, I would evaluate its performance using metrics such as accuracy,
+precision, recall, F1-score, and AUC-ROC. I would also use techniques like feature importance and
+partial dependence plots to understand which features are most important in predicting fraud.
+1
+With the insights gained from the model, I would develop an actionable plan for the financial company to proactively detect and prevent fraud. This plan could include implementing monitoring and
+detection systems, training employees to recognize and report suspicious activity, and developing
+strategies for identifying and mitigating high-risk transactions.
+Finally, to determine if the actions taken to prevent fraud are working, I would track the number
+of fraudulent transactions over time, as well as the financial losses caused by fraud. I would also
+monitor the performance of the fraud detection model over time to ensure it continues to be effective.
+HERE I AM USING KAGGLE ONLINE NOTEBOOK AS THE JUPITER NOTEBOOK USING ANACONDA WAS NOT COMPATIABLE
+Data cleaning: Before building a model, it is important to clean the data. This includes handling missing values, identifying and handling outliers, and checking for multi-collinearity among
+variables. Missing values can be handled by either dropping rows with missing values or imputing
+them with a method such as mean or median imputation. Outliers can be identified by visualizing
+the data or using statistical methods such as the Z-score. Multi-collinearity can be checked by
+calculating the correlation matrix and identifying variables with high correlation.
+Fraud detection model: The specific model used for fraud detection can vary depending on the
+data and the problem at hand. Some common models used for fraud detection include logistic
+regression, decision trees, and neural networks. I would use Random Forest Classifier, which is an
+ensemble method that combines multiple decision trees to make a prediction. Random Forest is
+a powerful algorithm, which can handle high-dimensional data with a large number of variables
+and can also handle categorical variables. It can also be used for feature selection, which is an
+important step in identifying the most relevant variables for predicting fraud.
+Variable selection: Variables can be selected using different methods such as correlation analysis,
+mutual information, or recursive feature elimination. I would use feature importance provided by
+Random Forest Classifier to select top variables.
+Model performance: Model performance can be evaluated using metrics such as accuracy, precision, recall, F1-score, and AUC-ROC. I would use confusion matrix, classification report, ROC-AUC
+curve and precision-recall curve to evaluate model performance.
+Key factors predicting fraudulent customer: The key factors that predict fraudulent customers can be identified by interpreting the model’s coefficients or feature importances. These
+factors may include demographic information, transaction history, and other relevant variables.
+Factors making sense: The factors that predict fraudulent customers should make sense in the
+context of the problem and the data. For example, if the model is identifying customers with a
+history of suspicious transactions as more likely to be fraudulent, that makes sense in the context
+of fraud detection.
+Prevention: To prevent fraud, the company can implement measures such as monitoring transactions for unusual patterns, implementing fraud detection software, and training employees to
+recognize and report suspicious activity.
+Evaluating actions: To determine if the actions taken to prevent fraud are working, the company
+can track the number of fraudulent transactions over time, as well as the financial losses caused by
+fraud. Additionally, the company can use metrics such as precision, recall, and F1-score to evaluate
+the performance of the fraud detection model over time.
+
+
+
+
+import pandas as pd
+import matplotlib.pyplot as plt
+import seabron as sns
+import numpy as np
+import pandas as pd
+PRE-PROCESSING
+WRANGLING
+
+# Read the data
+df=pd.read_csv("//input/fraud-filedata/Fraud.csv")
+df
+#Shape the data
+df.shape
+
+# Get head of the data
+df.head(200)
+
+df.tail(100)
+
+
+
+# Check for null values
+df.isnull().values.any()
+
+# Getting information about data
+df.info()
+
+#This is a really big dataset with no NULL values having size over 500MB. This would take some
+time to train for a normal GPU.
+
+legit = len(df[df.isFraud == 0])
+fraud = len(df[df.isFraud == 1])
+legit_percent = (legit / (fraud + legit)) * 100
+fraud_percent = (fraud / (fraud + legit)) * 100
+print("Number of Legit transactions: ", legit)
+print("Number of Fraud transactions: ", fraud)
+print("Percentage of Legit transactions: {:.4f} %".format(legit_percent))
+print("Percentage of Fraud transactions: {:.4f} %".format(fraud_percent))
+print("Number of Legit transactions: ", legit)
+print("Number of Fraud transactions: ", fraud)
+print("Percentage of Legit transactions: {:.4f} %".format(legit_percent))
+print("Percentage of Fraud transactions: {:.4f} %".format(fraud_percent))
+
+
+#These results prove that this is a highly unbalanced data as percentage of legit transactions= 99.87
+% and percentage of fraud transactions= 0.13 %. So decision trees and random forests are good
+methods for imbalanced data.
+
+X = df[df['nameDest'].str.contains('M')]
+X.head()
+
+#For merchants there is no information regarding the attribites oldbalanceDest and newbalanceDest.
+# VISUALISATION
+#CORRELATION HEATMAP
+
+
+corr=df.corr()
+plt.figure(figsize=(10,6))
+sns.heatmap(corr,annot=True)
+
+
+
+#NUMBER OF LEGIT AND FRAUD TRANSACTIONS
+plt.figure(figsize=(5,10))
+labels = ["Legit", "Fraud"]
+count_classes = df.value_counts(df['isFraud'], sort= True)
+count_classes.plot(kind = "bar", rot = 0)
+plt.title("Visualization of Labels")
+plt.ylabel("Count")
+plt.xticks(range(2), labels)
+plt.show()
+
+
+
+#PROBLEM SOLVING
+#creating a copy of original dataset to train and test models
+
+
+new_df=df.copy()
+new_df.head()
+
+#LABEL ENCODING
+# Checking how many attributes are dtype: object
+
+objList = new_df.select_dtypes(include = "object").columns
+
+print (objList)
+
+#There are 3 attributes with object datatype. Thus we need to label encode them in order to check
+multicolinearity.
+#Label Encoding for object to numeric conversion
+
+
+from sklearn.preprocessing import LabelEncoder
+le = LabelEncoder()
+for feat in objList:
+            new_df[feat] = le.fit_transform(new_df[feat].astype(str))
+print (new_df.info())
+
+
+[new_df.head()
+
+#MULTICOLINEARITY
+# Import library for VIF (VARIANCE INFLATION FACTOR)
+
+from statsmodels.stats.outliers_influence import variance_inflation_factor
+def calc_vif(df):       # Calculating VIF
+           vif = pd.DataFrame()
+           vif["variables"] = df.columns
+           vif["VIF"] = [variance_inflation_factor(df.values, i) for i in range(df.
+     ↪shape[1])]
+return(vif)
+calc_vif(new_df)
+
+*We can see that oldbalanceOrg and newbalanceOrig have too high VIF thus they are highly correlated. Similarly oldbalanceDest and newbalanceDest. Also nameDest is connected to nameOrig.
+Thus combine these pairs of collinear attributes and drop the individual ones.*
+
+new_df['Actual_amount_orig'] = new_df.apply(lambda x: x['oldbalanceOrg'] -␣
+   ↪x['newbalanceOrig'],axis=1)
+new_df['Actual_amount_dest'] = new_df.apply(lambda x: x['oldbalanceDest'] -␣
+    ↪x['newbalanceDest'],axis=1)
+new_df['TransactionPath'] = new_df.apply(lambda x: x['nameOrig'] +␣
+    ↪x['nameDest'],axis=1)
+#Dropping columns
+new_df = new_df.
+    ↪drop(['oldbalanceOrg','newbalanceOrig','oldbalanceDest','newbalanceDest','step','nameOrig','nameDest'],axis=1)
+calc_vif(new_df)
+
+
+
+corr=new_df.corr()
+plt.figure(figsize=(10,6))
+sns.heatmap(corr,annot=True)
+
+
+How did you select variables to be included in the model? Using the VIF values and
+correlation heatmap. We just need to check if there are any two attributes highly correlated to
+each other and then drop the one which is less correlated to the isFraud Attribute.
+#MODEL BUILDING
+
+
+from sklearn.preprocessing import StandardScaler
+from sklearn.model_selection import train_test_split
+from sklearn.ensemble import RandomForestClassifier
+from sklearn.tree import DecisionTreeClassifier
+import itertools
+from collections import Counter
+import sklearn.metrics as metrics
+from sklearn.metrics import classification_report, confusion_matrix,␣
+   ↪ConfusionMatrixDisplay
+
+
+#NORMALIZING (SCALING) AMOUNT
+# Perform Scaling
+scaler = StandardScaler()
+new_df["NormalizedAmount"] = scaler.fit_transform(new_df["amount"].values.
+  ↪reshape(-1, 1))
+new_df.drop(["amount"], inplace= True, axis= 1)
+Y = new_df["isFraud"]
+X = new_df.drop(["isFraud"], axis= 1)
+
+
+#TRAIN-TEST SPLIT
+# Split the data
+
+(X_train, X_test, Y_train, Y_test) = train_test_split(X, Y, test_size= 0.3,␣
+ ↪random_state= 42)
+print("Shape of X_train: ", X_train.shape)
+print("Shape of X_test: ", X_test.shape)
+
+#MODEL TRAINING
+# DECISION TREE
+decision_tree = DecisionTreeClassifier()
+decision_tree.fit(X_train, Y_train)
+Y_pred_dt = decision_tree.predict(X_test)
+decision_tree_score = decision_tree.score(X_test, Y_test) * 100
+
+
+# RANDOM FOREST
+random_forest = RandomForestClassifier(n_estimators= 100)
+random_forest.fit(X_train, Y_train)
+Y_pred_rf = random_forest.predict(X_test)
+random_forest_score = random_forest.score(X_test, Y_test) * 100
+
+
+#EVALUATION
+# Print scores of our classifiers
+print("Decision Tree Score: ", decision_tree_score)
+print("Random Forest Score: ", random_forest_score)
+
+
+# key terms of Confusion Matrix - DT
+print("TP,FP,TN,FN - Decision Tree")
+tn, fp, fn, tp = confusion_matrix(Y_test, Y_pred_dt).ravel()
+print(f'True Positives: {tp}')
+print(f'False Positives: {fp}')
+print(f'True Negatives: {tn}')
+print(f'False Negatives: {fn}')
+#break
+print("=="*50)
+# key terms of Confusion Matrix - RF
+print("TP,FP,TN,FN - Random Forest")
+tn, fp, fn, tp = confusion_matrix(Y_test, Y_pred_rf).ravel()
+print(f'True Positives: {tp}')
+print(f'False Positives: {fp}')
+print(f'True Negatives: {tn}')
+print(f'False Negatives: {fn}')
+
+print("=="*50)
+
+
+
+#TP(Decision Tree) ~ TP(Random Forest) so no competetion here.
+FP(Decision Tree) >> FP(Random Forest) - Random Forest has an edge
+TN(Decision Tree) < TN(Random Forest) - Random Forest is better here too
+FN(Decision Tree) ~ FN(Random Forest)
+Here Random Forest looks good.
+
+# confusion matrix - DT
+confusion_matrix_dt = confusion_matrix(Y_test, Y_pred_dt.round())
+print("Confusion Matrix - Decision Tree")
+print(confusion_matrix_dt,)
+#break
+printprint("=="*50)
+
+# confusion matrix - RF
+
+confusion_matrix_rf = confusion_matrix(Y_test, Y_pred_rf.round())
+print("Confusion Matrix - Random Forest")
+print(confusion_matrix_rf)
+
+
+
+# classification report - DT
+classification_report_dt = classification_report(Y_test, Y_pred_dt)
+print("Classification Report - Decision Tree")
+print(classification_report_dt)
+#break
+printprint("=="*50)
+# classification report - RF
+classification_report_rf = classification_report(Y_test, Y_pred_rf)
+print("Classification Report - Random Forest")
+print(classification_report_rf)
+
+print("=="*50)
+# visualising confusion matrix - DT
+disp = ConfusionMatrixDisplay(confusion_matrix=confusion_matrix_dt)
+disp.plot()
+plt.title('Confusion Matrix - DT')
+plt.show()
+
+
+# visualising confusion matrix - RF
+disp = ConfusionMatrixDisplay(confusion_matrix=confusion_matrix_rf)
+disp.plot()
+plt.title('Confusion Matrix - RF')
+plt.show()
+
+
+# AUC ROC - DT
+# calculate the fpr and tpr for all thresholds of the classification
+fpr, tpr, threshold = metrics.roc_curve(Y_test, Y_pred_dt)
+roc_auc = metrics.auc(fpr, tpr)
+plt.title('ROC - DT')
+plt.plot(fpr, tpr, 'b', label = 'AUC = %0.2f' % roc_auc)
+plt.legend(loc = 'lower right')
+plt.plot([0, 1], [0, 1],'r--')
+plt.xlim([0, 1])
+plt.ylim([0, 1])
+plt.ylabel('True Positive Rate')
+plt.xlabel('False Positive Rate')
+plt.show()
+# AUC ROC - RF
+# calculate the fpr and tpr for all thresholds of the classification
+fpr, tpr, threshold = metrics.roc_curve(Y_test, Y_pred_rf)
+roc_auc = metrics.auc(fpr, tpr)
+plt.title('ROC - RF')
+plt.plot(fpr, tpr, 'b', label = 'AUC = %0.2f' % roc_auc)
+plt.legend(loc = 'lower right')
+plt.plot([0, 1], [0, 1],'r--')
+plt.xlim([0, 1])
+plt.ylim([0, 1])
+plt.ylabel('True Positive Rate')
+plt.xlabel('False Positive Rate')
+plt.show()
+
+
+
+#THE AUC for both Decision Tree and Random Forest is equal, so both models are pretty good at
+what they do.
+In conclusion, developing a model for proactively detecting fraudulent transactions
+for a financial company requires a combination of statistical analysis and creativity/judgment. The process starts with data cleaning to address any issues with the
+data such as missing values, outliers, and multicollinearity. The model is then trained
+and evaluated using various machine learning algorithms, and the best performing model
+is selected. The performance of the model is evaluated using metrics such as accuracy,
+precision, recall, F1-score, and AUC-ROC. Insights from the model are used to develop
+an actionable plan for proactively detecting and preventing fraud, and the effectiveness
+of these actions is monitored over time to ensure they are working.
+We have seen that Accuracy of both Random Forest and Decision Tree is equal, although teh
+precision of Random Forest is more. In a fraud detection model, Precision is highly important
+because rather than predicting normal transactions correctly we want Fraud transactions to be
+predicted correctly and Legit to be left off.If either of the 2 reasons are not fulfiiled we may catch
+the innocent and leave the culprit. This is also one of the reason why Random Forest and Decision
+Tree are used unstead of other algorithms.
+Also the reason I have chosen this model is because of highly unbalanced dataset (Legit: Fraud
+:: 99.87:0.13). Random forest makes multiple decision trees which makes it easier (although time
+taking) for model to understand the data in a simpler way since Decision Tree makes decisions in
+a boolean way.
+Models like XGBoost, Bagging, ANN, and Logistic Regression may give good accuracy but they
+won’t give good precision and recall values.
